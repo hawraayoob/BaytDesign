@@ -1,4 +1,3 @@
-
 {% load static %}
 
 <!DOCTYPE html>
@@ -7,17 +6,313 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" type="image/png" href="" />
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.png' %}" />
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Base CSS -->
     <link rel="stylesheet" href="{% static 'css/base.css' %}" />
-    <title>Cat Collector</title>
-    {% block head %} 
-    {% endblock %}
+    
+    <!-- Page specific CSS -->
+    {% block extra_css %}{% endblock %}
+    
+    <title>{% block title %}BaytDesign - Home Design & Renovation{% endblock %}</title>
+    
+    {% block head %}{% endblock %}
   </head>
   <body>
-  
-    <main>
-     {% block content %} 
-     {% endblock %}
-     </main>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="/">
+          <i class="fas fa-home text-primary me-2"></i>
+          <span class="text-primary">Bayt</span><span class="text-secondary">Design</span>
+        </a>
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="fas fa-home me-1"></i>Home
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#budget">
+                <i class="fas fa-calculator me-1"></i>Budget
+              </a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-th-large me-1"></i>Categories
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">🪑 Furniture</a></li>
+                <li><a class="dropdown-item" href="#">🧱 Tiles</a></li>
+                <li><a class="dropdown-item" href="#">🎨 Paints</a></li>
+                <li><a class="dropdown-item" href="#">💡 Lighting</a></li>
+                <li><a class="dropdown-item" href="#">🚪 Doors & Windows</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#">View All Categories</a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">
+                <i class="fas fa-store me-1"></i>Stores
+              </a>
+            </li>
+          </ul>
+          
+          <ul class="navbar-nav">
+            {% if user.is_authenticated %}
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <div class="user-avatar me-2">
+                    <i class="fas fa-user"></i>
+                  </div>
+                  {{ user.username|title }}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li><a class="dropdown-item" href="#">
+                    <i class="fas fa-user me-2"></i>Profile
+                  </a></li>
+                  <li><a class="dropdown-item" href="#">
+                    <i class="fas fa-cog me-2"></i>Settings
+                  </a></li>
+                  <li><a class="dropdown-item" href="#budget">
+                    <i class="fas fa-calculator me-2"></i>My Budget
+                  </a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li>
+                    <form method="post" action="{% url 'admin:logout' %}" class="d-inline">
+                      {% csrf_token %}
+                      <button type="submit" class="dropdown-item text-danger border-0 bg-transparent">
+                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                      </button>
+                    </form>
+                  </li>
+                </ul>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'admin:login' %}">
+                  <i class="fas fa-sign-in-alt me-1"></i>Login
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="btn btn-primary btn-sm ms-2" href="{% url 'admin:login' %}">
+                  <i class="fas fa-user-plus me-1"></i>Sign Up
+                </a>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      {% if messages %}
+        <div class="container mt-3">
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+              <i class="fas fa-info-circle me-2"></i>
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      
+      {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-4 mb-4">
+            <h5 class="text-primary mb-3">
+              <i class="fas fa-home me-2"></i>BaytDesign
+            </h5>
+            <p class="text-light opacity-75">
+              Your trusted partner for home design and renovation needs. 
+              Browse our extensive collection from verified local stores in Bahrain.
+            </p>
+            <div class="social-links">
+              <a href="#" class="text-white me-3">
+                <i class="fab fa-facebook fa-lg"></i>
+              </a>
+              <a href="#" class="text-white me-3">
+                <i class="fab fa-twitter fa-lg"></i>
+              </a>
+              <a href="#" class="text-white me-3">
+                <i class="fab fa-instagram fa-lg"></i>
+              </a>
+              <a href="#" class="text-white">
+                <i class="fab fa-whatsapp fa-lg"></i>
+              </a>
+            </div>
+          </div>
+          
+          <div class="col-lg-2 col-md-6 mb-4">
+            <h6 class="text-uppercase mb-3">Categories</h6>
+            <ul class="list-unstyled">
+              <li><a href="#" class="text-light opacity-75 text-decoration-none">🪑 Furniture</a></li>
+              <li><a href="#" class="text-light opacity-75 text-decoration-none">🧱 Tiles</a></li>
+              <li><a href="#" class="text-light opacity-75 text-decoration-none">🎨 Paints</a></li>
+              <li><a href="#" class="text-light opacity-75 text-decoration-none">💡 Lighting</a></li>
+            </ul>
+          </div>
+          
+          <div class="col-lg-2 col-md-6 mb-4">
+            <h6 class="text-uppercase mb-3">Support</h6>
+            <ul class="list-unstyled">
+              <li><a href="#" class="text-light opacity-75 text-decoration-none">Help Center</a></li>
+              <li><a href="#" class="text-light opacity-75 text-decoration-none">Contact Us</a></li>
+              <li><a href="#" class="text-light opacity-75 text-decoration-none">FAQ</a></li>
+              <li><a href="tel:+97317123456" class="text-light opacity-75 text-decoration-none">Call Us</a></li>
+            </ul>
+          </div>
+          
+          <div class="col-lg-4 mb-4">
+            <h6 class="text-uppercase mb-3">Contact Info</h6>
+            <p class="text-light opacity-75 mb-2">
+              <i class="fas fa-map-marker-alt me-2"></i>
+              Manama, Kingdom of Bahrain
+            </p>
+            <p class="text-light opacity-75 mb-2">
+              <i class="fas fa-phone me-2"></i>
+              +973 1712 3456
+            </p>
+            <p class="text-light opacity-75 mb-3">
+              <i class="fas fa-envelope me-2"></i>
+              info@baytdesign.bh
+            </p>
+            <form class="newsletter-form">
+              {% csrf_token %}
+              <div class="input-group">
+                <input type="email" class="form-control" placeholder="Enter your email" required>
+                <button class="btn btn-primary" type="submit">
+                  <i class="fas fa-paper-plane"></i>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+        
+        <hr class="my-4 opacity-25">
+        
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <p class="mb-0 text-light opacity-75">
+              &copy; {% now "Y" %} BaytDesign. All rights reserved.
+            </p>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <a href="#" class="text-light opacity-75 text-decoration-none me-3">Privacy Policy</a>
+            <a href="#" class="text-light opacity-75 text-decoration-none me-3">Terms of Service</a>
+            <a href="#" class="text-light opacity-75 text-decoration-none">About Us</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Page specific JS -->
+    {% block extra_js %}{% endblock %}
+    
+    <style>
+      /* Base styles for navigation */
+      .navbar {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95) !important;
+        transition: all 0.3s ease;
+      }
+      
+      .navbar-brand {
+        font-size: 1.5rem;
+        font-weight: 800;
+      }
+      
+      .nav-link {
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+      
+      .nav-link:hover {
+        color: #667eea !important;
+      }
+      
+      .user-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.875rem;
+      }
+      
+      .main-content {
+        padding-top: 76px; /* Account for fixed navbar */
+      }
+      
+      .dropdown-menu {
+        border: none;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border-radius: 10px;
+      }
+      
+      .dropdown-item {
+        transition: all 0.3s ease;
+      }
+      
+      .dropdown-item:hover {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+      
+      .social-links a {
+        transition: all 0.3s ease;
+      }
+      
+      .social-links a:hover {
+        color: #667eea !important;
+        transform: translateY(-2px);
+      }
+      
+      .newsletter-form .form-control {
+        border-radius: 25px 0 0 25px;
+        border: none;
+        padding: 12px 20px;
+      }
+      
+      .newsletter-form .btn {
+        border-radius: 0 25px 25px 0;
+        padding: 12px 20px;
+      }
+      
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .main-content {
+          padding-top: 66px;
+        }
+      }
+    </style>
   </body>
 </html>
