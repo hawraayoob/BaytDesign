@@ -7,8 +7,6 @@ from django.contrib import messages
 from django.http import JsonResponse
 from .models import Classification, Shop, Product, Budget, SelectedProduct, Cart, Wishlist, ProductReview, BudgetEstimate
 
-
-
 # -----------------------
 # AUTH VIEWS
 # -----------------------
@@ -39,6 +37,7 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
+
 # -----------------------
 # HOME & CLASSIFICATION VIEWS
 # -----------------------
@@ -55,6 +54,7 @@ def classification_stores_view(request, slug):
         'shops': shops
     })
 
+
 # -----------------------
 # SHOP & PRODUCT VIEWS
 # -----------------------
@@ -66,6 +66,7 @@ def shop_products_view(request, shop_id):
         'shop': shop,
         'products': products
     })
+
 
 # -----------------------
 # ADMIN VIEWS
@@ -122,6 +123,7 @@ def add_product_view(request, shop_id):
         return redirect('shop_products', shop_id=shop.id)
     return render(request, 'add_product.html', {'shop': shop})
 
+
 # -----------------------
 # BUDGET VIEWS
 # -----------------------
@@ -138,7 +140,6 @@ def budget_view(request):
             budget.save()
             return redirect('budget')
 
-    # Calculate budget-related values
     remaining_budget = budget.total_amount - total_spent
     budget_percentage = (total_spent / budget.total_amount * 100) if budget.total_amount > 0 else 0
     is_over_budget = total_spent > budget.total_amount
@@ -157,8 +158,6 @@ def budget_view(request):
 @login_required
 def add_to_budget_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    
-    # Check if product is already in user's budget
     existing_selection = SelectedProduct.objects.filter(user=request.user, product=product).first()
     
     if existing_selection:
@@ -197,10 +196,7 @@ def cart_view(request):
     cart_items = Cart.objects.filter(user=request.user)
     total_price = sum([item.total_price for item in cart_items])
     
-    # Get user's budget
     budget, created = Budget.objects.get_or_create(user=request.user)
-    
-    # Calculate budget-related values
     is_over_budget = total_price > budget.total_amount if budget.total_amount > 0 else False
     over_budget_amount = total_price - budget.total_amount if is_over_budget else 0
     budget_percentage = (total_price / budget.total_amount * 100) if budget.total_amount > 0 else 0
@@ -219,8 +215,6 @@ def cart_view(request):
 @login_required
 def add_to_cart_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    
-    # Check if product is already in cart
     cart_item, created = Cart.objects.get_or_create(
         user=request.user,
         product=product,
@@ -266,12 +260,7 @@ def wishlist_view(request):
 @login_required
 def add_to_wishlist_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    
-    # Check if already in wishlist
-    wishlist_item, created = Wishlist.objects.get_or_create(
-        user=request.user,
-        product=product
-    )
+    wishlist_item, created = Wishlist.objects.get_or_create(user=request.user, product=product)
     
     if created:
         messages.success(request, f'{product.name} added to your list!')
@@ -309,7 +298,6 @@ def add_review_view(request, product_id):
         rating = int(request.POST.get('rating'))
         review_text = request.POST.get('review_text', '')
         
-        # Check if user already reviewed this product
         existing_review = ProductReview.objects.filter(user=request.user, product=product).first()
         
         if existing_review:
@@ -318,12 +306,7 @@ def add_review_view(request, product_id):
             existing_review.save()
             messages.success(request, 'Review updated!')
         else:
-            ProductReview.objects.create(
-                user=request.user,
-                product=product,
-                rating=rating,
-                review_text=review_text
-            )
+            ProductReview.objects.create(user=request.user, product=product, rating=rating, review_text=review_text)
             messages.success(request, 'Review added!')
         
         return redirect('shop_products', shop_id=product.shop.id)
@@ -334,15 +317,17 @@ def add_review_view(request, product_id):
 def product_reviews_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     reviews = ProductReview.objects.filter(product=product).order_by('-created_date')
-    
-    # Calculate average rating
-    if reviews:
-        avg_rating = sum([review.rating for review in reviews]) / len(reviews)
-    else:
-        avg_rating = 0
+    avg_rating = sum([review.rating for review in reviews]) / len(reviews) if reviews else 0
     
     return render(request, 'product_reviews.html', {
         'product': product,
         'reviews': reviews,
         'avg_rating': avg_rating,
     })
+
+
+# -----------------------
+# ABOUT PAGE VIEW
+# -----------------------
+def about_view(request):
+    return render(request, 'about.html')
