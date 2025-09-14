@@ -5,7 +5,7 @@
   <span class="headline">Design Your Home With Us</span>
 </h1>
 
-🏡 ![Home Design](./assets/home-design-banner.png)
+🏡 ![Home Design](./pic/interor%20cover%20img.jpg)
 
 ## About
 
