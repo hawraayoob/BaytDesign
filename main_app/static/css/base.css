@@ -1,15 +1,12 @@
-/* BaytDesign Base Styles - Earthy/Grey Theme */
-
-/* ==================== ROOT VARIABLES ==================== */
 :root {
-    /* Updated Earthy/Grey Color Palette */
-    --primary-color: #736E66;        /* Main Earthy Tone */
-    --primary-light: #A69B8D;         /* Lighter Earthy */
+   
+    --primary-color: #736E66;       
+    --primary-light: #A69B8D;       
     --primary-dark: #5F7161;
-          /* Almost Black */
 
-    --secondary-color: #BFB2A3;      /* Soft Taupe */
-    --accent-color: #F2F2F2;         /* Light Background */
+    
+    --secondary-color: #BFB2A3;     
+    --accent-color: #F2F2F2;      
 
     --font-primary: 'Inter', sans-serif;
     --font-heading: 'Inter', serif;
@@ -35,10 +32,10 @@
 
 
     --btn-hover-shadow: 0 6px 15px #5F7161;
- /* Darker shadow for buttons */
+ 
 }
 
-/* ==================== BASE STYLES ==================== */
+
 * {
     box-sizing: border-box;
 }
@@ -63,7 +60,7 @@ body {
     min-height: calc(100vh - 76px);
 }
 
-/* ==================== TYPOGRAPHY ==================== */
+
 h1{
     font-family: var(--font-heading);
     font-weight: 700;
@@ -85,7 +82,7 @@ h2, h3, h4, h5, h6 {
     color: var(--secondary-color);
 }
 
-/* ==================== NAVIGATION ==================== */
+
 .navbar {
     background: var(--accent-color) !important;
     border-bottom: 2px solid var(--secondary-color);
@@ -106,7 +103,7 @@ h2, h3, h4, h5, h6 {
     position: relative;
 }
 
-/* ==================== BUTTONS ==================== */
+
 .btn {
     border: none;
     border-radius: var(--radius-lg);
@@ -120,7 +117,7 @@ h2, h3, h4, h5, h6 {
     transition: box-shadow 0.3s ease;
 }
 
-/* Button hover with darker shadow */
+
 .btn:hover,
 .btn:focus {
     box-shadow: var(--btn-hover-shadow);
@@ -130,7 +127,7 @@ h2, h3, h4, h5, h6 {
     border: none !important;
 }
 
-/* Remove all active/click effects */
+
 .btn:active {
     background-color: var(--primary-color) !important;
     color: white !important;
@@ -171,7 +168,7 @@ h2, h3, h4, h5, h6 {
     outline: none !important;
 }
 
-/* ==================== CARDS ==================== */
+
 .card {
     background: white;
     border: none;
@@ -198,7 +195,7 @@ h2, h3, h4, h5, h6 {
     border-radius: 0 0 var(--radius-xl) var(--radius-xl);
 }
 
-/* ==================== FORMS ==================== */
+
 .form-control {
     border: 2px solid var(--secondary-color);
     border-radius: var(--radius-md);
@@ -213,7 +210,7 @@ h2, h3, h4, h5, h6 {
     outline: none;
 }
 
-/* ==================== FOOTER ==================== */
+
 footer {
     background: var(--primary-dark);
     color: var(--accent-color);
@@ -225,7 +222,7 @@ footer a {
     text-decoration: none;
 }
 
-/* ==================== TABLES ==================== */
+
 .table {
     background: var(--accent-color);
     border-radius: var(--radius-lg);
@@ -245,7 +242,7 @@ footer a {
     border-color: var(--secondary-color);
 }
 
-/* ==================== RESPONSIVE DESIGN ==================== */
+
 @media (max-width: 768px) {
     .hero-section { min-height: 40vh; padding: var(--spacing-xl) 0; }
     .display-4 { font-size: 2.5rem; }
@@ -259,18 +256,10 @@ footer a {
     h3 { font-size: 1.5rem; }
 }
 
-/* ==================== UTILITY CLASSES ==================== */
+
 .text-primary { color: var(--primary-color) !important; }
 .text-secondary { color: var(--secondary-color) !important; }
 .bg-primary { background-color: var(--primary-color) !important; }
 .bg-secondary { background-color: var(--secondary-color) !important; }
 .shadow-soft { box-shadow: var(--shadow-sm); }
 .shadow-medium { box-shadow: var(--shadow-md); }
-
-/* ==================== SIMPLIFICATION NOTES ==================== */
-/*
-- Removed all hover/focus/active/pressed color changes (green, blue, etc.)
-- Disabled Bootstrap button colors and enforced earthy primary tone.
-- Buttons now maintain exact color on all states except hover shows darker shadow.
-- Card and typography remain clean and elegant with earthy styling.
-*/
