@@ -5,7 +5,8 @@
     /* Updated Earthy/Grey Color Palette */
     --primary-color: #736E66;        /* Main Earthy Tone */
     --primary-light: #A69B8D;         /* Lighter Earthy */
-    --primary-dark: #0A0C0D;          /* Almost Black */
+    --primary-dark: #5F7161;
+          /* Almost Black */
 
     --secondary-color: #BFB2A3;      /* Soft Taupe */
     --accent-color: #F2F2F2;         /* Light Background */
@@ -26,11 +27,15 @@
     --radius-xl: 1rem;
     --radius-round: 50%;
 
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
-    --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-    --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+    --shadow-sm: 0 1px 3px #5F7161;
 
-    --btn-hover-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* Darker shadow for buttons */
+    --shadow-md: 0 4px 6px #5F7161;
+
+    --shadow-lg: 0 10px 15px #5F7161;
+
+
+    --btn-hover-shadow: 0 6px 15px #5F7161;
+ /* Darker shadow for buttons */
 }
 
 /* ==================== BASE STYLES ==================== */
