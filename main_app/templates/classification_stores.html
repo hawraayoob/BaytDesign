@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ classification.name }} - BaytDesign{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="bg-light py-3">
+    <div class="container">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item active">{{ classification.name }}</li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Classification Header -->
+<div class="container py-4">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <h1 class="display-5 fw-bold mb-2">
+                <span class="me-3">{{ classification.icon }}</span>
+                {{ classification.name }}
+            </h1>
+            <p class="lead text-muted mb-0">
+                {{ classification.description|default:"Browse our collection of "|add:classification.name|lower }}
+            </p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            {% if user.is_staff %}
+                <a href="{% url 'add_shop' classification.id %}" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Add New Shop
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Stores Section -->
+<div class="container pb-5">
+    {% if shops %}
+        <div class="row g-4">
+            {% for shop in shops %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card shop-card h-100 border-0 shadow-sm">
+                        {% if shop.image %}
+                            <img src="{{ shop.image.url }}" class="card-img-top" alt="{{ shop.name }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <i class="fas fa-store fa-3x text-muted"></i>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="card-body">
+                            <h5 class="card-title">{{ shop.name }}</h5>
+                            <p class="card-text text-muted">{{ shop.description|truncatewords:15 }}</p>
+                            
+                            {% if shop.address %}
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        <i class="fas fa-map-marker-alt"></i> {{ shop.address|truncatewords:8 }}
+                                    </small>
+                                </p>
+                            {% endif %}
+                            
+                            {% if shop.phone %}
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        <i class="fas fa-phone"></i> {{ shop.phone }}
+                                    </small>
+                                </p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="card-footer bg-transparent border-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a href="{% url 'shop_products' shop.id %}" class="btn btn-primary">
+                                    <i class="fas fa-eye"></i> View Products
+                                </a>
+                                {% if user.is_staff %}
+                                    <a href="{% url 'add_product' shop.id %}" class="btn btn-outline-success btn-sm">
+                                        <i class="fas fa-plus"></i> Add Product
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-5">
+            <i class="fas fa-store fa-5x text-muted mb-4"></i>
+            <h3 class="text-muted">No Shops Available</h3>
+            <p class="text-muted mb-4">
+                There are no shops available in this category yet.
+                {% if user.is_staff %}
+                    Be the first to add a shop!
+                {% endif %}
+            </p>
+            {% if user.is_staff %}
+                <a href="{% url 'add_shop' classification.id %}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add First Shop
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+
+<!-- Back to Home -->
+<div class="container pb-4">
+    <div class="text-center">
+        <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Categories
+        </a>
+    </div>
+</div>
+
+<style>
+    .shop-card {
+        transition: all 0.3s ease;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .shop-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+    }
+    
+    .card-img-top {
+        transition: all 0.3s ease;
+    }
+    
+    .shop-card:hover .card-img-top {
+        transform: scale(1.05);
+    }
+    
+    .btn {
+        border-radius: 25px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn:hover {
+        transform: translateY(-2px);
+    }
+    
+    .breadcrumb {
+        background: transparent;
+    }
+    
+    .breadcrumb-item + .breadcrumb-item::before {
+        content: ">";
+    }
+</style>
+{% endblock %}

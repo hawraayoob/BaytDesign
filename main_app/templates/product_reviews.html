@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} Reviews - BaytDesign{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1>Reviews for {{ product.name }}</h1>
+    <p>Average Rating: {{ avg_rating|floatformat:1 }}/5</p>
+
+    {% if reviews %}
+        <ul class="list-group">
+        {% for review in reviews %}
+            <li class="list-group-item">
+                <strong>{{ review.user.username }}</strong> - {{ review.rating }}/5<br>
+                <small>{{ review.created_at|date:"F j, Y H:i" }}</small>
+                <p>{{ review.comment }}</p>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No reviews yet. Be the first to review this product!</p>
+    {% endif %}
+</div>
+{% endblock %}

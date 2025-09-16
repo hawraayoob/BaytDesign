@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Add Product - BaytDesign{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="bg-light py-3 mb-4">
+        <div class="container">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'classification_stores' shop.classification.slug %}">
+                        {{ shop.classification.name }}
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'shop_products' shop.id %}">{{ shop.name }}</a>
+                </li>
+                <li class="breadcrumb-item active">Add Product</li>
+            </ol>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <div class="row">
+        <div class="col-12">
+            <h1 class="display-5 fw-bold mb-4">
+                <i class="fas fa-plus-circle"></i> Add New Product
+            </h1>
+            <p class="lead text-muted">
+                Add a new product to <strong>{{ shop.name }}</strong>
+            </p>
+        </div>
+    </div>
+
+    <!-- Add Product Form -->
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-box"></i> Product Information
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="name" class="form-label">
+                                <i class="fas fa-tag"></i> Product Name *
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="name" 
+                                   name="name" 
+                                   required 
+                                   placeholder="Enter product name">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="price" class="form-label">
+                                        <i class="fas fa-dollar-sign"></i> Price *
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" 
+                                               class="form-control" 
+                                               id="price" 
+                                               name="price" 
+                                               step="0.01" 
+                                               min="0" 
+                                               required 
+                                               placeholder="0.00">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="is_available" class="form-label">
+                                        <i class="fas fa-check-circle"></i> Availability
+                                    </label>
+                                    <select class="form-control" id="is_available" name="is_available">
+                                        <option value="true" selected>Available</option>
+                                        <option value="false">Out of Stock</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">
+                                <i class="fas fa-info-circle"></i> Product Description
+                            </label>
+                            <textarea class="form-control" 
+                                      id="description" 
+                                      name="description" 
+                                      rows="5" 
+                                      placeholder="Enter detailed product description including features, materials, dimensions, etc."></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="image" class="form-label">
+                                <i class="fas fa-image"></i> Product Image
+                            </label>
+                            <input type="file" 
+                                   class="form-control" 
+                                   id="image" 
+                                   name="image" 
+                                   accept="image/*">
+                            <div class="form-text">Upload a high-quality photo of the product (optional)</div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'shop_products' shop.id %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save"></i> Add Product
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card border-0 bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-lightbulb"></i> Tips for Adding Products
+                    </h5>
+                    <ul class="mb-0">
+                        <li>Use clear, descriptive product names</li>
+                        <li>Include accurate pricing information</li>
+                        <li>Write detailed descriptions with key features and specifications</li>
+                        <li>Upload high-quality images that show the product clearly</li>
+                        <li>Keep availability status updated</li>
+                        <li>Include dimensions, materials, and other relevant details</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 15px;
+    }
+    
+    .form-control {
+        border-radius: 10px;
+        border: 2px solid #e9ecef;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: #198754;
+        box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+    }
+    
+    .btn {
+        border-radius: 25px;
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .input-group-text {
+        border-radius: 10px 0 0 10px;
+        border: 2px solid #e9ecef;
+        border-right: none;
+    }
+    
+    .input-group .form-control {
+        border-radius: 0 10px 10px 0;
+        border-left: none;
+    }
+    
+    .breadcrumb {
+        background: transparent;
+    }
+    
+    .breadcrumb-item + .breadcrumb-item::before {
+        content: ">";
+    }
+</style>
+{% endblock %}

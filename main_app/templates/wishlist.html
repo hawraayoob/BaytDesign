@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Wishlist - BaytDesign{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1>My Wishlist</h1>
+
+    {% if wishlist_items %}
+        <ul class="list-group">
+        {% for item in wishlist_items %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ item.product.name }}
+                <div>
+                    <a href="{% url 'remove_from_wishlist' item.id %}" class="btn btn-sm btn-danger">Remove</a>
+                </div>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Your wishlist is empty. <a href="{% url 'home' %}">Browse products</a></p>
+    {% endif %}
+</div>
+{% endblock %}
