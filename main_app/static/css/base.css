@@ -1,11 +1,15 @@
 /* ----------------------- Base Styles ----------------------- */
 :root {
-    --primary-color: #ff7f50; /* warm coral */
-    --secondary-color: #6c757d;
-    --light-color: #fdfdfd;
-    --dark-color: #1f1f1f;
-    --bg-color: #fafafa;
-    --card-bg: #ffffff;
+    --primary-color: #8B6E4E; /* earthy brown */
+    --secondary-color: #5F7161; /* sage green */
+    --accent-color: #D0B49F; /* soft terracotta */
+    --light-color: #F4F1EA; /* cream */
+    --dark-color: #3C3C3C; /* charcoal */
+    --bg-color: #F9F6F0; /* off-white */
+    --card-bg: #FFFFFF;
+    --danger-color: #A45D5D; /* earthy red */
+    --warning-color: #D4AC2B; /* earthy yellow */
+    --success-color: #6B8E4E; /* earthy green */
     --shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
@@ -78,13 +82,14 @@ h1, h2, h3 {
 }
 
 .btn-primary {
-    background: linear-gradient(45deg, #ff7f50, #ff9966);
+    background: linear-gradient(45deg, #8B6E4E, #A68A64);
     color: #fff;
 }
 
 .btn-primary:hover {
     opacity: 0.95;
     transform: translateY(-2px);
+    background: linear-gradient(45deg, #7D614A, #9A7E5A);
 }
 
 /* ----------------------- Links ----------------------- */
@@ -96,6 +101,88 @@ a {
 
 a:hover {
     text-decoration: underline;
+}
+
+/* ----------------------- Budget & Cart Pages ----------------------- */
+.container {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.progress {
+    height: 20px;
+    background-color: var(--light-color);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.progress-bar {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    transition: width 0.6s ease;
+}
+
+.alert-danger {
+    background-color: var(--danger-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.budget-summary {
+    background-color: var(--light-color);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+.budget-summary h4 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 0.5rem;
+}
+
+.list-group-item {
+    background-color: var(--light-color);
+    border: 1px solid var(--accent-color);
+    margin-bottom: 0.5rem;
+    border-radius: 8px !important;
+    transition: all 0.3s ease;
+}
+
+.list-group-item:hover {
+    transform: translateX(5px);
+    background-color: white;
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    border: none;
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    border: none;
+}
+
+.quantity-input {
+    width: 70px;
+    text-align: center;
 }
 
 /* ----------------------- Error Messages ----------------------- */

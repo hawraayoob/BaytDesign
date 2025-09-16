@@ -44,4 +44,9 @@ urlpatterns = [
 
     # About page (new)
     path('about/', views.about_view, name='about'),  # ✅ Add this
+    
+    # Profile
+    path('profile/', views.profile_view, name='profile'),
+    path('update-profile/', views.update_profile_view, name='update_profile'),
+    path('change-password/', views.change_password_view, name='change_password'),
 ]

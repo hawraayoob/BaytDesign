@@ -10,12 +10,12 @@
         <small>Created on: {{ budget_created_at|date:"F j, Y" }}</small>
     {% endif %}
 
-    <p>Total Budget: ${{ budget.total|floatformat:2 }}</p>
-    <p>Total Spent: ${{ total_spent|floatformat:2 }}</p>
-    <p>Remaining: ${{ remaining_budget|floatformat:2 }}</p>
+    <p>Total Budget: {{ budget.total|floatformat:2 }} BHD</p>
+    <p>Total Spent: {{ total_spent|floatformat:2 }} BHD</p>
+    <p>Remaining: {{ remaining_budget|floatformat:2 }} BHD</p>
 
     <!-- Progress Bar -->
-    <div class="progress mb-3" style="height:20px;">
+    <div class="progress mb-3">
         <div class="progress-bar" style="width: {{ budget_percentage|default:0|floatformat:0 }}%;"></div>
     </div>
     <small>{{ budget_percentage|default:0|floatformat:0 }}% used</small>
@@ -23,20 +23,34 @@
     <!-- Update Budget Form -->
     <form method="post" class="mb-4 mt-3">
         {% csrf_token %}
-        <label>Update Budget ($)</label>
-        <input type="number" name="budget" value="{{ budget.total }}" min="0" step="0.01" class="form-control mb-2">
+        <label>Update Budget (BHD)</label>
+<input type="number" name="budget" value="{{ budget.total }}" min="0" step="0.01" class="form-control mb-2">
         <button type="submit" class="btn btn-primary">Update</button>
     </form>
+
+    <!-- Budget Alert - Always visible when over budget -->
+    {% if is_over_budget %}
+        <div class="alert alert-danger mb-4">
+            <strong>Warning!</strong> You are over budget! Your total spending (including cart items) exceeds your budget.
+        </div>
+    {% endif %}
 
     <!-- Selected Products -->
     <h3>Selected Products</h3>
     {% if selected_products %}
         <ul>
         {% for sp in selected_products %}
-            <li>{{ sp.product.name }} - ${{ sp.product.price|floatformat:2 }} × {{ sp.quantity }} = ${{ sp.total_price|floatformat:2 }}</li>
+            <li>{{ sp.product.name }} - {{ sp.product.price|floatformat:2 }} BHD × {{ sp.quantity }} = {{ sp.total_price|floatformat:2 }} BHD</li>
         {% endfor %}
         </ul>
-        <p><strong>Total Spent:</strong> ${{ total_spent|floatformat:2 }}</p>
+        <p><strong>Total Spent:</strong> {{ total_spent|floatformat:2 }} BHD</p>
+        
+        <!-- Budget Information -->
+        <div class="budget-summary">
+            <h4>Budget Summary</h4>
+            <p>Total Budget: {{ budget.total|floatformat:2 }} BHD</p>
+            <p>Used: {{ budget_percentage|default:0|floatformat:0 }}%</p>
+        </div>
     {% else %}
         <p>No products selected. <a href="{% url 'home' %}">Browse Categories</a></p>
     {% endif %}

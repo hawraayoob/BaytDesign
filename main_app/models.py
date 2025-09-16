@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class Classification(models.Model):
@@ -24,6 +27,10 @@ class Shop(models.Model):
     name = models.CharField(max_length=200)
     classification = models.ForeignKey(Classification, on_delete=models.CASCADE)
     description = models.TextField(blank=True, null=True)
+    image = models.ImageField(upload_to='store_images/', blank=True, null=True)  # Added image field
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -34,6 +41,8 @@ class Product(models.Model):
     name = models.CharField(max_length=200)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField(blank=True, null=True)
+    image = models.ImageField(upload_to='product_images/', blank=True, null=True)  # Added image field
+    is_available = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
@@ -95,3 +104,24 @@ class BudgetEstimate(models.Model):
 
     def __str__(self):
         return f"Estimate for {self.user.username} – {self.estimated_cost}"
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='userprofile')
+    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s Profile"
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    try:
+        instance.userprofile.save()
+    except ObjectDoesNotExist:
+        UserProfile.objects.create(user=instance)

@@ -5,21 +5,80 @@
 
 {% block content %}
 <div class="container py-4">
-    <h1>Reviews for {{ product.name }}</h1>
-    <p>Average Rating: {{ avg_rating|floatformat:1 }}/5</p>
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="bg-light py-3 mb-4">
+        <div class="container">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'classification_stores' product.shop.classification.slug %}">
+                        {{ product.shop.classification.name }}
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'shop_products' product.shop.id %}">{{ product.shop.name }}</a>
+                </li>
+                <li class="breadcrumb-item active">Reviews</li>
+            </ol>
+        </div>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Reviews for {{ product.name }}</h1>
+        <a href="{% url 'add_review' product.id %}" class="btn btn-primary">Write a Review</a>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="d-flex align-items-center">
+                <div class="display-4 me-3">{{ avg_rating|floatformat:1 }}</div>
+                <div>
+                    <div class="fs-4">
+                        {% for i in "12345"|make_list %}
+                            {% if forloop.counter <= avg_rating|floatformat:0|add:"0" %}
+                                <i class="fas fa-star text-warning"></i>
+                            {% elif forloop.counter <= avg_rating|floatformat:0|add:"0.5"|add:"0.5" %}
+                                <i class="fas fa-star-half-alt text-warning"></i>
+                            {% else %}
+                                <i class="far fa-star text-warning"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="text-muted">Based on {{ reviews|length }} review{% if reviews|length != 1 %}s{% endif %}</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     {% if reviews %}
-        <ul class="list-group">
-        {% for review in reviews %}
-            <li class="list-group-item">
-                <strong>{{ review.user.username }}</strong> - {{ review.rating }}/5<br>
-                <small>{{ review.created_at|date:"F j, Y H:i" }}</small>
-                <p>{{ review.comment }}</p>
-            </li>
-        {% endfor %}
-        </ul>
+        <div class="card shadow-sm">
+            <div class="list-group list-group-flush">
+                {% for review in reviews %}
+                    <div class="list-group-item">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <span class="fw-bold me-2">{{ review.user.username }}</span>
+                                    <span class="badge bg-secondary">{{ review.rating }}/5</span>
+                                </div>
+                                <p class="mb-1">{{ review.comment }}</p>
+                                <small class="text-muted">{{ review.created_at|date:"F j, Y" }}</small>
+                            </div>
+                            {% if review.user == user %}
+                                <div>
+                                    <a href="{% url 'edit_review' review.id %}" class="btn btn-sm btn-outline-primary me-1">Edit</a>
+                                    <a href="{% url 'delete_review' review.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this review?');">Delete</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
     {% else %}
-        <p>No reviews yet. Be the first to review this product!</p>
+        <div class="alert alert-info">
+            <p class="mb-0">No reviews yet. <a href="{% url 'add_review' product.id %}">Be the first to review this product!</a></p>
+        </div>
     {% endif %}
 </div>
 {% endblock %}

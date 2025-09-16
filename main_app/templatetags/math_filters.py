@@ -1,4 +1,5 @@
 from django import template
+from decimal import Decimal
 
 register = template.Library()
 
@@ -33,6 +34,17 @@ def add(value, arg):
         return float(value) + float(arg)
     except (ValueError, TypeError):
         return 0
+
+@register.filter
+def bhd(value):
+    """Format the value as BHD currency."""
+    try:
+        # Convert to Decimal for precise decimal arithmetic
+        value = Decimal(str(value))
+        # Format with 3 decimal places and BHD symbol
+        return f"BHD {value:.3f}"
+    except (ValueError, TypeError, decimal.InvalidOperation):
+        return "BHD 0.000"
 
 
 
