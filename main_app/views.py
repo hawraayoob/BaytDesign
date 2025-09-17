@@ -134,32 +134,94 @@ def add_product_view(request, shop_id):
 # -----------------------
 @login_required
 def budget_view(request):
-    budget, created = Budget.objects.get_or_create(user=request.user)
-    selected_products = SelectedProduct.objects.filter(budget=budget)
+    from decimal import Decimal, InvalidOperation
     
-    # Calculate total price for each selected product
-    for product in selected_products:
-        product.total_price = product.product.price * product.quantity
+    # Initialize budget variable
+    budget = None
     
-    # Get cart items and calculate their total
-    cart_items = Cart.objects.filter(user=request.user)
-    cart_total = sum([item.product.price * item.quantity for item in cart_items])
+    # First check if the user has a budget with valid decimal values
+    try:
+        # Try to directly create a new budget if one doesn't exist
+        budget = Budget.objects.filter(user=request.user).first()
+        if not budget:
+            budget = Budget.objects.create(user=request.user, total=Decimal('0'))
+        # Verify the decimal value is valid
+        Decimal(str(budget.total))
+    except (InvalidOperation, ValueError):
+        # If there's an invalid decimal, fix the budget record
+        if budget:
+            budget.total = Decimal('0')
+            budget.save()
+        else:
+            budget = Budget.objects.create(user=request.user, total=Decimal('0'))
     
-    # Total spent is the sum of selected products and cart items
-    budget_products_total = sum([p.total_price for p in selected_products])
-    total_spent = budget_products_total + cart_total
-
+    # Handle budget update from form
     if request.method == "POST":
         new_budget = request.POST.get('budget')
         if new_budget:
-            budget.total = float(new_budget)
-            budget.save()
-            return redirect('budget')
+            try:
+                # Ensure we're working with a clean decimal value
+                new_budget_decimal = Decimal(new_budget.strip())
+                budget.total = new_budget_decimal
+                budget.save()
+                messages.success(request, "Budget updated successfully.")
+                # Don't redirect - render the page with updated values
+            except (InvalidOperation, ValueError) as e:
+                # Handle invalid input
+                messages.error(request, f"Invalid budget amount. Please enter a valid number. Error: {str(e)}")
+                # Don't redirect - render the page with error message
+    
+    selected_products = SelectedProduct.objects.filter(budget=budget, user=request.user)
+    
+    # Calculate total price for each selected product
+    for product in selected_products:
+        try:
+            product.total_price = product.product.price * product.quantity
+        except (InvalidOperation, TypeError):
+            # Handle invalid price values
+            product.total_price = Decimal('0')
+    
+    # Get cart items and calculate their total
+    cart_items = Cart.objects.filter(user=request.user)
+    cart_total = Decimal('0')
+    for item in cart_items:
+        try:
+            cart_total += item.product.price * item.quantity
+        except (InvalidOperation, TypeError):
+            # Skip items with invalid prices
+            pass
+    
+    # Total spent is the sum of selected products and cart items
+    budget_products_total = Decimal('0')
+    for p in selected_products:
+        try:
+            budget_products_total += p.total_price
+        except (InvalidOperation, TypeError):
+            # Skip items with invalid prices
+            pass
+    
+    total_spent = budget_products_total + cart_total
 
-    remaining_budget = budget.total - total_spent
-    budget_percentage = (total_spent / budget.total * 100) if budget.total > 0 else 0
-    is_over_budget = total_spent > budget.total
-    is_near_budget = total_spent > (budget.total * 9 / 10) if budget.total > 0 else False
+    try:
+        remaining_budget = budget.total - total_spent
+    except (InvalidOperation, TypeError):
+        remaining_budget = Decimal('0')
+        
+    try:
+        budget_percentage = (total_spent / budget.total * Decimal('100')) if budget.total > 0 else Decimal('0')
+    except (InvalidOperation, TypeError, ZeroDivisionError):
+        budget_percentage = Decimal('0')
+        
+    try:
+        # Only show warning when actually over budget (not when equal)
+        is_over_budget = total_spent > budget.total
+    except (InvalidOperation, TypeError):
+        is_over_budget = False
+        
+    try:
+        is_near_budget = total_spent > (budget.total * Decimal('0.9')) if budget.total > 0 else False
+    except (InvalidOperation, TypeError):
+        is_near_budget = False
 
     return render(request, 'budget.html', {
         'budget': budget,
@@ -177,13 +239,13 @@ def add_to_budget_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     budget, created = Budget.objects.get_or_create(user=request.user)
     
-    existing_selection = SelectedProduct.objects.filter(product=product, budget=budget).first()
+    existing_selection = SelectedProduct.objects.filter(product=product, budget=budget, user=request.user).first()
     
     if existing_selection:
         existing_selection.quantity += 1
         existing_selection.save()
     else:
-        SelectedProduct.objects.create(product=product, budget=budget)
+        SelectedProduct.objects.create(product=product, budget=budget, user=request.user)
     
     # Get the referring page URL or default to budget page
     referer = request.META.get('HTTP_REFERER')
@@ -217,15 +279,47 @@ def update_quantity_view(request, selected_product_id):
 # -----------------------
 @login_required
 def cart_view(request):
+    from decimal import Decimal, InvalidOperation
+    
     cart_items = Cart.objects.filter(user=request.user)
     # Calculate total price by multiplying each item's product price by quantity
-    total_price = sum([item.product.price * item.quantity for item in cart_items])
+    total_price = Decimal('0')
+    for item in cart_items:
+        try:
+            total_price += item.product.price * item.quantity
+        except (InvalidOperation, TypeError):
+            # Skip items with invalid prices
+            pass
     
-    budget, created = Budget.objects.get_or_create(user=request.user)
-    is_over_budget = total_price > budget.total if budget.total > 0 else False
-    over_budget_amount = total_price - budget.total if is_over_budget else 0
-    budget_percentage = (total_price / budget.total * 100) if budget.total > 0 else 0
-    is_near_budget = total_price > (budget.total * 9 / 10) if budget.total > 0 else False
+    # Initialize budget variable
+    budget = None
+    
+    # First check if the user has a budget with valid decimal values
+    try:
+        # Try to directly create a new budget if one doesn't exist
+        budget = Budget.objects.filter(user=request.user).first()
+        if not budget:
+            budget = Budget.objects.create(user=request.user, total=Decimal('0'))
+        # Verify the decimal value is valid
+        Decimal(str(budget.total))
+    except (InvalidOperation, ValueError):
+        # If there's an invalid decimal, fix the budget record
+        if budget:
+            budget.total = Decimal('0')
+            budget.save()
+        else:
+            budget = Budget.objects.create(user=request.user, total=Decimal('0'))
+    
+    try:
+        is_over_budget = total_price > budget.total if budget.total > 0 else False
+        over_budget_amount = total_price - budget.total if is_over_budget else Decimal('0')
+        budget_percentage = (total_price / budget.total * Decimal('100')) if budget.total > 0 else Decimal('0')
+        is_near_budget = total_price > (budget.total * Decimal('0.9')) if budget.total > 0 else False
+    except (InvalidOperation, TypeError, ZeroDivisionError):
+        is_over_budget = False
+        over_budget_amount = Decimal('0')
+        budget_percentage = Decimal('0')
+        is_near_budget = False
     
     return render(request, 'cart.html', {
         'cart_items': cart_items,

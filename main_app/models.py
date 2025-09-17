@@ -60,6 +60,7 @@ class Budget(models.Model):
 class SelectedProduct(models.Model):
     budget = models.ForeignKey(Budget, on_delete=models.CASCADE, related_name="products")
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     quantity = models.PositiveIntegerField(default=1)
 
     def __str__(self):
