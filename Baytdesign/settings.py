@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-^7!sv*z4wf3vyvwx_+qc+l1xpmto&^+--cvz4r*)!kjr!ae95z
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['https://baytdesign.onrender.com']
+# ALLOWED_HOSTS = ['https://baytdesign.onrender.com']
+ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = ['https://baytdesign.onrender.com']
 
 
