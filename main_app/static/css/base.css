@@ -1,11 +1,11 @@
 :root {
-    /* Neutral Gray Palette */
-    --primary-color: #4A4A4A;       /* Dark Gray */
-    --primary-light: #7A7A7A;       /* Medium Gray */
-    --primary-dark: #2E2E2E;        /* Almost Black */
+    /* Red Color Palette */
+    --primary-color: #8B0000;       /* Dark Red */
+    --primary-light: #B22222;       /* Firebrick */
+    --primary-dark: #5A0000;        /* Deep Red */
 
-    --secondary-color: #B0B0B0;     /* Light Gray */
-    --accent-color: #EAEAEA;        /* Soft Background Gray */
+    --secondary-color: #D46A6A;     /* Soft Red/Muted Rose */
+    --accent-color: #F9EAEA;        /* Light Red Background */
 
     --font-primary: 'Inter', sans-serif;
     --font-heading: 'Inter', serif;
@@ -23,11 +23,11 @@
     --radius-xl: 1rem;
     --radius-round: 50%;
 
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
-    --shadow-md: 0 4px 6px rgba(0,0,0,0.12);
-    --shadow-lg: 0 10px 15px rgba(0,0,0,0.15);
+    --shadow-sm: 0 1px 3px rgba(139,0,0,0.15);
+    --shadow-md: 0 4px 6px rgba(139,0,0,0.2);
+    --shadow-lg: 0 10px 15px rgba(139,0,0,0.25);
 
-    --btn-hover-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    --btn-hover-shadow: 0 6px 15px rgba(139,0,0,0.25);
 }
 
 
@@ -165,7 +165,7 @@ h2, h3, h4, h5, h6 {
 
 
 .card {
-    background: #F5F5F5;
+    background: #FFF0F0;
     border: none;
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-md);
