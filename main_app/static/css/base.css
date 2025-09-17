@@ -78,7 +78,7 @@ h2, h3, h4,h6 {
 
 .lead {
     font-size: 1.25rem;
-    color:  #F9EAEA; 
+    color:  #dab9b9; 
         font-weight: 600;
 
 }
@@ -173,7 +173,7 @@ h2, h3, h4,h6 {
 .card {
     /*background: #FFF0F0;*/
 
-    background: rgba(15, 53, 15, 0.158);
+    background: rgba(15, 53, 15, 0.107);
     border: none;
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-md);

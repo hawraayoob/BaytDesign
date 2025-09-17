@@ -21,11 +21,18 @@
                 <li class="breadcrumb-item active">Add Review</li>
             </ol>
         </div>
+
     </nav>
 
+    <!-- Product + Review in the same row -->
+    <div class="row align-items-start">
+        <!-- Product Section -->
+        <div class="col-md-6 text-center mb-4">
+            <h1 class="fw-bold mb-2">{{ product.name }}</h1>
+            <p class="h4 text-danger mb-3">
+                <i class="fas fa-bhd-sign"></i> {{ product.price }}
+            </p>
 
-    <div class="row mb-4">
-        <div class="col-md-4">
             {% if product.image %}
                 <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded shadow">
             {% else %}
@@ -34,23 +41,9 @@
                 </div>
             {% endif %}
         </div>
-        <div class="col-md-8">
-            <h1 class="display-6 fw-bold mb-3">{{ product.name }}</h1>
-            <p class="lead text-muted mb-3">{{ product.description }}</p>
-            <div class="d-flex align-items-center gap-4">
-                <span class="h4 text-primary mb-0">
-                    <i class="fas fa-dollar-sign"></i> {{ product.price }}
-                </span>
-                <span class="badge bg-secondary">
-                    <i class="fas fa-store"></i> {{ product.shop.name }}
-                </span>
-            </div>
-        </div>
-    </div>
 
-
-    <div class="row justify-content-center">
-        <div class="col-md-8">
+        <!-- Review Box -->
+        <div class="col-md-6">
             <div class="card border-0 shadow-lg">
                 <div class="card-header bg-warning text-dark">
                     <h5 class="mb-0">
@@ -106,7 +99,7 @@
         </div>
     </div>
 
-
+    <!-- Review Guidelines Section -->
     <div class="row mt-5">
         <div class="col-12">
             <div class="card border-0 bg-light">
@@ -149,7 +142,7 @@
     .rating label:hover,
     .rating label:hover ~ label,
     .rating input:checked ~ label {
-        color: #ffc107;
+        color: #5A0000;
     }
     
     .card {
@@ -163,7 +156,7 @@
     }
     
     .form-control:focus {
-        border-color: #ffc107;
+        border-color: #5A0000;
         box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
     }
     
@@ -185,8 +178,3 @@
     }
 </style>
 {% endblock %}
-
-
-
-
-

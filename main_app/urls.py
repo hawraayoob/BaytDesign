@@ -41,10 +41,12 @@ urlpatterns = [
     # Reviews
     path('add-review/<int:product_id>/', views.add_review_view, name='add_review'),
     path('product-reviews/<int:product_id>/', views.product_reviews_view, name='product_reviews'),
+    path('edit-review/<int:review_id>/', views.edit_review_view, name='edit_review'),   # ✅ Added
+    path('delete-review/<int:review_id>/', views.delete_review_view, name='delete_review'),  # ✅ Added
 
-    # About page (new)
-    path('about/', views.about_view, name='about'),  # ✅ Add this
-    
+    # About page
+    path('about/', views.about_view, name='about'),
+
     # Profile
     path('profile/', views.profile_view, name='profile'),
     path('update-profile/', views.update_profile_view, name='update_profile'),
