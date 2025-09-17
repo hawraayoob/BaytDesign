@@ -1,11 +1,10 @@
 :root {
-    /* Red Color Palette */
-    --primary-color: #8B0000;       /* Dark Red */
-    --primary-light: #B22222;       /* Firebrick */
-    --primary-dark: #5A0000;        /* Deep Red */
+    --primary-color: #8B0000;       
+    --primary-light: #B22222;       
+    --primary-dark: #5A0000;       
 
-    --secondary-color: #D46A6A;     /* Soft Red/Muted Rose */
-    --accent-color: #F9EAEA;        /* Light Red Background */
+    --secondary-color: #D46A6A;    
+    --accent-color: #F9EAEA;       
 
     --font-primary: 'Inter', sans-serif;
     --font-heading: 'Inter', serif;
@@ -64,7 +63,7 @@ h1{
     margin-bottom: var(--spacing-md);
 }
 
-h2, h3, h4, h5, h6 {
+h2, h3, h4,h6 {
     font-family: var(--font-heading);
     font-weight: 700;
     line-height: 1.2;
@@ -72,9 +71,16 @@ h2, h3, h4, h5, h6 {
     margin-bottom: var(--spacing-md);
 }
 
+.card-title {
+    color: rgb(52, 75, 52) ;
+}
+
+
 .lead {
     font-size: 1.25rem;
-    color: var(--primary-light);
+    color:  #F9EAEA; 
+        font-weight: 600;
+
 }
 
 
@@ -131,7 +137,7 @@ h2, h3, h4, h5, h6 {
     border: none !important;
 }
 
-/* Remove Bootstrap default btn colors */
+
 .btn-primary,
 .btn-success,
 .btn-danger,
@@ -165,7 +171,9 @@ h2, h3, h4, h5, h6 {
 
 
 .card {
-    background: #FFF0F0;
+    /*background: #FFF0F0;*/
+
+    background: rgba(15, 53, 15, 0.158);
     border: none;
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-md);
@@ -259,7 +267,7 @@ footer a {
 .shadow-soft { box-shadow: var(--shadow-sm); }
 .shadow-medium { box-shadow: var(--shadow-md); }
 
-/*auth pages*/
+
 
 .auth-split {
     display: flex;
@@ -297,7 +305,7 @@ footer a {
     object-fit: cover;
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
     .auth-split {
         flex-direction: column;

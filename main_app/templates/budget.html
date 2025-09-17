@@ -14,13 +14,13 @@
     <p>Total Spent: {{ total_spent|floatformat:2 }} BHD</p>
     <p>Remaining: {{ remaining_budget|floatformat:2 }} BHD</p>
 
-    <!-- Progress Bar -->
+
     <div class="progress mb-3">
         <div class="progress-bar" style="width: {{ budget_percentage|default:0|floatformat:0 }}%;"></div>
     </div>
     <small>{{ budget_percentage|default:0|floatformat:0 }}% used</small>
 
-    <!-- Update Budget Form -->
+
     <form method="post" class="mb-4 mt-3">
         {% csrf_token %}
         <label>Update Budget (BHD)</label>
@@ -28,14 +28,14 @@
         <button type="submit" class="btn btn-primary">Update</button>
     </form>
 
-    <!-- Budget Alert - Always visible when over budget -->
+
     {% if is_over_budget %}
         <div class="alert alert-danger mb-4">
             <strong>Warning!</strong> You are over budget! Your total spending (including cart items) exceeds your budget.
         </div>
     {% endif %}
 
-    <!-- Selected Products -->
+
     <h3>Selected Products</h3>
     {% if selected_products %}
         <ul>
@@ -45,7 +45,7 @@
         </ul>
         <p><strong>Total Spent:</strong> {{ total_spent|floatformat:2 }} BHD</p>
         
-        <!-- Budget Information -->
+
         <div class="budget-summary">
             <h4>Budget Summary</h4>
             <p>Total Budget: {{ budget.total|floatformat:2 }} BHD</p>

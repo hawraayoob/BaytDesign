@@ -1,11 +1,11 @@
 # BaytDesign
 
 # <h1>
-  <span class="prefix">Home Design Platform</span>   "BaytDesign"
+  <span class="prefix">Bayt Design Platform</span>   "BaytDesign"
   <span class="headline">Design Your Home With Us</span>
 </h1>
 
-🏡 ![Home Design](./pic/interor%20cover%20img.jpg)
+🏡 ![Home Design](./main_app/static/images/a-89.jpg)
 
 ## About
 
@@ -115,10 +115,7 @@ Welcome to **Design Your Home With Us**, Bahrain's premier digital platform conn
 
 ## 📞 Contact & Support
 
-- **Email**: info@designyourhomebh.com
-- **Phone**: +973 XXXX XXXX
+- **Email**: hawraalkulaib.01@gmail.com
+- **Phone**: +973 35624377
 - **Website**: www.designyourhomebh.com
 - **Social**: @DesignYourHomeBH
-
----
-*Made with ❤️ in Bahrain*
