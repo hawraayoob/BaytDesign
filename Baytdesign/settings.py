@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'Baytdesign.wsgi.application'
 DATABASES = {
     'default': dj_database_url.config(
         # Replace this value with your local database's connection string.
-        default=os.environ.get('DATABASE_URL') or 'postgresql://hawraa:35624@localhost:5432/baytdesign',
+        default=os.environ.get('DATABASE_URL'),
         conn_max_age=600
     ),
 
