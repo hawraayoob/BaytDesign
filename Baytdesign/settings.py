@@ -12,29 +12,20 @@ import os
 from pathlib import Path
 import dj_database_url
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# -------------------------
-# Quick-start development settings - unsuitable for production
-# -------------------------
-# SECURITY WARNING: keep the secret key used in production secret!
+
 SECRET_KEY = 'django-insecure-^7!sv*z4wf3vyvwx_+qc+l1xpmto&^+--cvz4r*)!kjr!ae95z'
 
-# -------------------------
-# Debug mode
-# -------------------------
+
 DEBUG = True  # Set True for local development. False for production.
 
-# -------------------------
-# Allowed hosts
-# -------------------------
+
 ALLOWED_HOSTS = ['*']  # Accept all hosts locally
 CSRF_TRUSTED_ORIGINS = ['https://baytdesign.onrender.com']
 
-# -------------------------
-# Installed apps
-# -------------------------
+
 INSTALLED_APPS = [
     'main_app',
     'django.contrib.admin',
@@ -46,9 +37,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
 ]
 
-# -------------------------
-# Middleware
-# -------------------------
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -60,20 +49,16 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# -------------------------
-# Root URL
-# -------------------------
+
 ROOT_URLCONF = 'Baytdesign.urls'
 
-# -------------------------
-# Templates
-# -------------------------
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / "templates",  # project-level templates
-            BASE_DIR / "main_app" / "templates",  # main_app templates
+            BASE_DIR / "templates",  
+            BASE_DIR / "main_app" / "templates", 
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -87,16 +72,13 @@ TEMPLATES = [
     },
 ]
 
-# -------------------------
-# WSGI
-# -------------------------
+
+
 WSGI_APPLICATION = 'Baytdesign.wsgi.application'
 
-# -------------------------
-# Database
-# -------------------------
+
 if DEBUG:
-    # Use SQLite locally for development
+
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -104,7 +86,7 @@ if DEBUG:
         }
     }
 else:
-    # Use remote PostgreSQL in production
+
     DATABASES = {
         'default': dj_database_url.config(
             default='postgresql://baytdesign_user:vdCbzIu1UZ963ZteZd64PJFkqrTqJ4Jr@dpg-d35a2logjchc73euupeg-a/baytdesign',
@@ -112,9 +94,6 @@ else:
         ),
     }
 
-# -------------------------
-# Password validation
-# -------------------------
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',},
@@ -122,34 +101,26 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',},
 ]
 
-# -------------------------
-# Internationalization
-# -------------------------
+
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# -------------------------
-# Static files
-# -------------------------
+
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "main_app" / "static",
 ]
 
-# Use WhiteNoise for production static files
+
 if not DEBUG:
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# -------------------------
-# Media files
-# -------------------------
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# -------------------------
-# Default primary key
-# -------------------------
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

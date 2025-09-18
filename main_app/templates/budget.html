@@ -39,10 +39,10 @@
     {% endif %}
     
     <script>
-        // Get the total spent value from the server-side
+
         const totalSpent = {{ total_spent|default:0 }};
         
-        // Function to calculate and update percentage
+
         function updatePercentage() {
             const budgetValue = parseFloat(document.getElementById('budget-input').value) || 0;
             let percentage = 0;
@@ -52,17 +52,17 @@
                 percentage = Math.min(Math.max(percentage, 0), 999); // Limit to reasonable range
             }
             
-            // Update the percentage display
+
             document.getElementById('percentage-display').innerText = Math.round(percentage) + '% used';
             
-            // Update the progress bar width
+
             const progressBar = document.querySelector('.progress-bar');
             if (progressBar) {
                 progressBar.style.width = Math.min(percentage, 100) + '%';
                 progressBar.setAttribute('aria-valuenow', Math.round(percentage));
             }
             
-            // Show/hide warning based on budget
+
             const warningElement = document.getElementById('budget-warning');
             if (warningElement) {
                 if (totalSpent > budgetValue && budgetValue > 0) {
@@ -72,35 +72,35 @@
                 }
             }
             
-            // Save warning state to localStorage
+
             localStorage.setItem('isOverBudget', totalSpent > budgetValue && budgetValue > 0);
         }
         
-        // Update percentage when budget input changes
+
         document.getElementById('budget-input').addEventListener('input', updatePercentage);
         
-        // Store budget value and warning state after form submission
+
         document.getElementById('budget-form').addEventListener('submit', function(e) {
             const budgetValue = document.getElementById('budget-input').value;
             localStorage.setItem('currentBudget', budgetValue);
             localStorage.setItem('isOverBudget', totalSpent > parseFloat(budgetValue) && parseFloat(budgetValue) > 0);
-            // We'll let the form submit normally to update the server-side values
+
         });
         
-        // On page load
+
         window.addEventListener('load', function() {
-            // Restore budget value if available
+
             const savedBudget = localStorage.getItem('currentBudget');
             if (savedBudget) {
                 document.getElementById('budget-input').value = savedBudget;
-                // Update percentage with the restored budget value
+
                 updatePercentage();
                 
-                // Calculate if over budget based on current values, not stored state
+
                 const budgetValue = parseFloat(savedBudget) || 0;
                 const isActuallyOverBudget = totalSpent > budgetValue && budgetValue > 0;
                 
-                // Update warning message based on actual calculation
+
                 const warningElement = document.getElementById('budget-warning');
                 if (warningElement) {
                     warningElement.style.display = isActuallyOverBudget ? 'block' : 'none';

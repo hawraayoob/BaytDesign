@@ -8,13 +8,11 @@ from django.http import JsonResponse
 from django.contrib.auth.models import User
 from .models import Classification, Shop, Product, Budget, SelectedProduct, Cart, Wishlist, ProductReview, BudgetEstimate, UserProfile
 
-# check if user is superuser
+
 def is_admin(user):
     return user.is_superuser
 
-# -----------------------
-# AUTH VIEWS
-# -----------------------
+
 def signup_view(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
@@ -43,9 +41,7 @@ def logout_view(request):
     return redirect('login')
 
 
-# -----------------------
-# HOME & CLASSIFICATION VIEWS
-# -----------------------
+
 def home_view(request):
     classifications = Classification.objects.all()
     return render(request, 'home.html', {'classifications': classifications})
@@ -60,9 +56,7 @@ def classification_stores_view(request, slug):
     })
 
 
-# -----------------------
-# SHOP & PRODUCT VIEWS
-# -----------------------
+
 @login_required
 def shop_products_view(request, shop_id):
     shop = get_object_or_404(Shop, id=shop_id)
@@ -73,9 +67,7 @@ def shop_products_view(request, shop_id):
     })
 
 
-# -----------------------
-# ADMIN VIEWS
-# -----------------------
+
 @user_passes_test(is_admin)
 def add_shop_view(request, classification_id):
     classification = get_object_or_404(Classification, id=classification_id)
@@ -129,28 +121,26 @@ def add_product_view(request, shop_id):
     return render(request, 'add_product.html', {'shop': shop})
 
 
-# -----------------------
-# BUDGET VIEWS
-# -----------------------
+
 @login_required
 def budget_view(request):
     from decimal import Decimal, InvalidOperation
     
-    # Initialize budget variable
+
     budget = None
     
-    # First check if the user has a budget with valid decimal values
+
     try:
-        # Always get the latest budget from the database
+
         budget = Budget.objects.filter(user=request.user).first()
         if not budget:
-            # Create a new budget if one doesn't exist
+
             budget = Budget.objects.create(user=request.user, total=Decimal('0'))
             budget.save()
-        # Verify the decimal value is valid
+
         Decimal(str(budget.total))
     except (InvalidOperation, ValueError):
-        # If there's an invalid decimal, fix the budget record
+
         if budget:
             budget.total = Decimal('0')
             budget.save()
@@ -158,52 +148,52 @@ def budget_view(request):
             budget = Budget.objects.create(user=request.user, total=Decimal('0'))
             budget.save()
     
-    # Handle budget update from form
+
     if request.method == "POST":
         new_budget = request.POST.get('budget')
         if new_budget:
             try:
-                # Ensure we're working with a clean decimal value
+
                 new_budget_decimal = Decimal(new_budget.strip())
                 budget.total = new_budget_decimal
                 budget.save()
-                # Force a database commit to ensure persistence
+
                 from django.db import transaction
                 transaction.commit()
                 messages.success(request, "Budget updated successfully!")
-                # Don't redirect - render the page with updated values
+
             except (InvalidOperation, ValueError) as e:
-                # Handle invalid input
+
                 messages.error(request, f"Invalid budget amount. Please enter a valid number.")
-                # Don't redirect - render the page with error message
+
     
     selected_products = SelectedProduct.objects.filter(budget=budget, user=request.user)
     
-    # Calculate total price for each selected product
+
     for product in selected_products:
         try:
             product.total_price = product.product.price * product.quantity
         except (InvalidOperation, TypeError):
-            # Handle invalid price values
+
             product.total_price = Decimal('0')
     
-    # Get cart items and calculate their total
+
     cart_items = Cart.objects.filter(user=request.user)
     cart_total = Decimal('0')
     for item in cart_items:
         try:
             cart_total += item.product.price * item.quantity
         except (InvalidOperation, TypeError):
-            # Skip items with invalid prices
+
             pass
     
-    # Total spent is the sum of selected products and cart items
+
     budget_products_total = Decimal('0')
     for p in selected_products:
         try:
             budget_products_total += p.total_price
         except (InvalidOperation, TypeError):
-            # Skip items with invalid prices
+
             pass
     
     total_spent = budget_products_total + cart_total
@@ -216,14 +206,14 @@ def budget_view(request):
     try:
         if budget.total > 0:
             budget_percentage = (total_spent / budget.total * Decimal('100'))
-            # Don't limit the percentage to 100 to show accurate over-budget status
+
         else:
             budget_percentage = Decimal('0')
     except (InvalidOperation, TypeError, ZeroDivisionError):
         budget_percentage = Decimal('0')
         
     try:
-        # Only show warning when actually over budget (not when equal)
+
         is_over_budget = total_spent > budget.total
     except (InvalidOperation, TypeError):
         is_over_budget = False
@@ -257,7 +247,7 @@ def add_to_budget_view(request, product_id):
     else:
         SelectedProduct.objects.create(product=product, budget=budget, user=request.user)
     
-    # Get the referring page URL or default to budget page
+
     referer = request.META.get('HTTP_REFERER')
     if referer:
         return redirect(referer)
@@ -284,36 +274,33 @@ def update_quantity_view(request, selected_product_id):
     return redirect('budget')
 
 
-# -----------------------
-# CART VIEWS (My Cart)
-# -----------------------
 @login_required
 def cart_view(request):
     from decimal import Decimal, InvalidOperation
     
     cart_items = Cart.objects.filter(user=request.user)
-    # Calculate total price by multiplying each item's product price by quantity
+
     total_price = Decimal('0')
     for item in cart_items:
         try:
             total_price += item.product.price * item.quantity
         except (InvalidOperation, TypeError):
-            # Skip items with invalid prices
+
             pass
     
-    # Initialize budget variable
+
     budget = None
     
-    # First check if the user has a budget with valid decimal values
+
     try:
-        # Try to directly create a new budget if one doesn't exist
+
         budget = Budget.objects.filter(user=request.user).first()
         if not budget:
             budget = Budget.objects.create(user=request.user, total=Decimal('0'))
-        # Verify the decimal value is valid
+
         Decimal(str(budget.total))
     except (InvalidOperation, ValueError):
-        # If there's an invalid decimal, fix the budget record
+
         if budget:
             budget.total = Decimal('0')
             budget.save()
@@ -355,7 +342,7 @@ def add_to_cart_view(request, product_id):
         cart_item.save()
     
     messages.success(request, f'{product.name} added to cart!')
-    # Get the referring page URL or default to shop products page
+
     referer = request.META.get('HTTP_REFERER')
     if referer:
         return redirect(referer)
@@ -382,9 +369,6 @@ def update_cart_quantity_view(request, cart_item_id):
     return redirect('cart')
 
 
-# -----------------------
-# WISHLIST VIEWS (My List)
-# -----------------------
 @login_required
 def wishlist_view(request):
     wishlist_items = Wishlist.objects.filter(user=request.user)
@@ -400,7 +384,7 @@ def add_to_wishlist_view(request, product_id):
     else:
         messages.info(request, f'{product.name} is already in your list!')
     
-    # Get the referring page URL or default to shop products page
+
     referer = request.META.get('HTTP_REFERER')
     if referer:
         return redirect(referer)
@@ -424,9 +408,6 @@ def mark_as_purchased_view(request, wishlist_item_id):
     return redirect('wishlist')
 
 
-# -----------------------
-# REVIEW VIEWS
-# -----------------------
 @login_required
 def add_review_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -463,15 +444,10 @@ def product_reviews_view(request, product_id):
     })
 
 
-# -----------------------
-# ABOUT PAGE VIEW
-# -----------------------
 def about_view(request):
     return render(request, 'about.html')
 
-# -----------------------
-# PROFILE VIEWS
-# -----------------------
+
 @login_required
 def profile_view(request):
     wishlist_items = Wishlist.objects.filter(user=request.user)
@@ -488,20 +464,20 @@ def update_profile_view(request):
         username = request.POST.get('username')
         profile_picture = request.FILES.get('profile_picture')
         
-        # Get or create UserProfile for the user
+
         user_profile, created = UserProfile.objects.get_or_create(user=request.user)
         
-        # Check if username is available
+
         if username != request.user.username and User.objects.filter(username=username).exists():
             messages.error(request, 'Username already taken.')
             return redirect('profile')
         
-        # Handle profile picture upload
+
         if profile_picture:
             user_profile.profile_picture = profile_picture
             user_profile.save()
         
-        # Update user information
+
         request.user.username = username
         request.user.first_name = first_name
         request.user.save()
@@ -542,21 +518,21 @@ def change_password_view(request):
         new_password1 = request.POST.get('new_password1')
         new_password2 = request.POST.get('new_password2')
         
-        # Check if current password is correct
+
         if not request.user.check_password(old_password):
             messages.error(request, 'Your current password is incorrect.')
             return redirect('profile')
         
-        # Check if new passwords match
+
         if new_password1 != new_password2:
             messages.error(request, 'New passwords do not match.')
             return redirect('profile')
         
-        # Set new password
+
         request.user.set_password(new_password1)
         request.user.save()
         
-        # Update session to prevent logout
+
         from django.contrib.auth import update_session_auth_hash
         update_session_auth_hash(request, request.user)
         

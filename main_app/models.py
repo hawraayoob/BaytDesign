@@ -8,10 +8,10 @@ from django.core.exceptions import ObjectDoesNotExist
 
 class Classification(models.Model):
     name = models.CharField(max_length=100)
-    slug = models.SlugField(unique=True, blank=True)  # ✅ added slug
-    icon = models.CharField(max_length=10, blank=True, null=True)  # optional emoji/icon
-    description = models.TextField(blank=True, null=True)  # optional
-    image = models.ImageField(upload_to='store_images/', blank=True, null=True)  # ✅ Store image
+    slug = models.SlugField(unique=True, blank=True) 
+    icon = models.CharField(max_length=10, blank=True, null=True)  
+    description = models.TextField(blank=True, null=True) 
+    image = models.ImageField(upload_to='store_images/', blank=True, null=True)  
 
 
     def save(self, *args, **kwargs):
@@ -27,7 +27,7 @@ class Shop(models.Model):
     name = models.CharField(max_length=200)
     classification = models.ForeignKey(Classification, on_delete=models.CASCADE)
     description = models.TextField(blank=True, null=True)
-    image = models.ImageField(upload_to='store_images/', blank=True, null=True)  # Added image field
+    image = models.ImageField(upload_to='store_images/', blank=True, null=True)  
     phone = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     address = models.TextField(blank=True, null=True)
@@ -41,7 +41,7 @@ class Product(models.Model):
     name = models.CharField(max_length=200)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField(blank=True, null=True)
-    image = models.ImageField(upload_to='product_images/', blank=True, null=True)  # Added image field
+    image = models.ImageField(upload_to='product_images/', blank=True, null=True)  
     is_available = models.BooleanField(default=True)
 
     def __str__(self):

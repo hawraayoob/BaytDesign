@@ -91,7 +91,7 @@ class ModelsTest(TestCase):
     def test_classification_creation(self):
         """Test that a classification can be created with expected attributes"""
         self.assertEqual(self.classification.name, 'Furniture')
-        self.assertEqual(self.classification.slug, 'furniture')  # Should be auto-generated
+        self.assertEqual(self.classification.slug, 'furniture')  
         self.assertEqual(self.classification.description, 'Home furniture items')
         
     def test_shop_creation(self):
@@ -193,7 +193,7 @@ class ModelsTest(TestCase):
         product_ids = list(self.shop.product_set.values_list('id', flat=True))
         self.shop.delete()
         
-        # Check that products are deleted
+        
         self.assertEqual(Product.objects.filter(id__in=product_ids).count(), 0)
         
     def test_delete_classification_cascades_to_shops(self):
@@ -202,5 +202,5 @@ class ModelsTest(TestCase):
         shop_ids = list(self.classification.shop_set.values_list('id', flat=True))
         self.classification.delete()
         
-        # Check that shops are deleted
+        
         self.assertEqual(Shop.objects.filter(id__in=shop_ids).count(), 0)
