@@ -11,6 +11,9 @@
 
 Welcome to **Design Your Home With Us**, Bahrain's premier digital platform connecting homeowners with local interior design resources and vendors. This innovative application serves as your comprehensive guide to transforming your living space by providing curated access to local furniture stores, paint suppliers, tile showrooms, lighting specialists, and other home design essentials. Whether you're a first-time homeowner, planning a renovation, or a professional interior designer, our platform streamlines the home design process by connecting you directly with trusted local businesses and resources in Bahrain.
 
+## ERD
+![alt text](<Bayt Design Platform ERD.png>)
+
 ## 🌟 Key Features
 
 ### Core Functionality
@@ -81,7 +84,7 @@ Welcome to **Design Your Home With Us**, Bahrain's premier digital platform conn
 ## 🚀 Getting Started
 
 ### For Users
-1. Download the app from App Store or Google Play
+1. open the app from google
 2. Create your profile and specify your design preferences
 3. Browse local vendors by category or search for specific items
 4. Save favorites and create project lists
