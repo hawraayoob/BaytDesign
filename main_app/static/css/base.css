@@ -70,6 +70,13 @@ body {
 }
 
 
+.custom-header {
+    background-color: #A69B8D !important; 
+    color: white; 
+}
+
+
+
 
 h1{
     font-family: var(--primary-light);
