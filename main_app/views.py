@@ -141,10 +141,12 @@ def budget_view(request):
     
     # First check if the user has a budget with valid decimal values
     try:
-        # Try to directly create a new budget if one doesn't exist
+        # Always get the latest budget from the database
         budget = Budget.objects.filter(user=request.user).first()
         if not budget:
+            # Create a new budget if one doesn't exist
             budget = Budget.objects.create(user=request.user, total=Decimal('0'))
+            budget.save()
         # Verify the decimal value is valid
         Decimal(str(budget.total))
     except (InvalidOperation, ValueError):
@@ -154,6 +156,7 @@ def budget_view(request):
             budget.save()
         else:
             budget = Budget.objects.create(user=request.user, total=Decimal('0'))
+            budget.save()
     
     # Handle budget update from form
     if request.method == "POST":
@@ -164,11 +167,14 @@ def budget_view(request):
                 new_budget_decimal = Decimal(new_budget.strip())
                 budget.total = new_budget_decimal
                 budget.save()
-                messages.success(request, "Budget updated successfully.")
+                # Force a database commit to ensure persistence
+                from django.db import transaction
+                transaction.commit()
+                messages.success(request, "Budget updated successfully!")
                 # Don't redirect - render the page with updated values
             except (InvalidOperation, ValueError) as e:
                 # Handle invalid input
-                messages.error(request, f"Invalid budget amount. Please enter a valid number. Error: {str(e)}")
+                messages.error(request, f"Invalid budget amount. Please enter a valid number.")
                 # Don't redirect - render the page with error message
     
     selected_products = SelectedProduct.objects.filter(budget=budget, user=request.user)
@@ -208,7 +214,11 @@ def budget_view(request):
         remaining_budget = Decimal('0')
         
     try:
-        budget_percentage = (total_spent / budget.total * Decimal('100')) if budget.total > 0 else Decimal('0')
+        if budget.total > 0:
+            budget_percentage = (total_spent / budget.total * Decimal('100'))
+            # Don't limit the percentage to 100 to show accurate over-budget status
+        else:
+            budget_percentage = Decimal('0')
     except (InvalidOperation, TypeError, ZeroDivisionError):
         budget_percentage = Decimal('0')
         

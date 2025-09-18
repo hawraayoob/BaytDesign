@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Review - {{ product.name }} | BaytDesign{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <nav aria-label="breadcrumb" class="bg-light py-3 mb-4">
+        <div class="container">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'classification_stores' product.shop.classification.slug %}">
+                        {{ product.shop.classification.name }}
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'shop_products' product.shop.id %}">{{ product.shop.name }}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'product_reviews' product.id %}">Reviews</a>
+                </li>
+                <li class="breadcrumb-item active">Edit Review</li>
+            </ol>
+        </div>
+    </nav>
+
+    <h1 class="mb-4">Edit Your Review for {{ product.name }}</h1>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+
+                <div class="d-flex justify-content-end mt-3">
+                    <a href="{% url 'product_reviews' product.id %}" class="btn btn-secondary me-2">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

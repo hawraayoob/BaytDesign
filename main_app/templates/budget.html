@@ -5,7 +5,7 @@
 
 {% block content %}
 <div class="container py-4">
-    <h1>My Budget</h1>
+
     {% if budget_created_at %}
         <small>Created on: {{ budget_created_at|date:"F j, Y" }}</small>
     {% endif %}
@@ -16,25 +16,98 @@
 
 
     <div class="progress mb-3">
-        <div class="progress-bar" style="width: {{ budget_percentage|default:0|floatformat:0 }}%;"></div>
+        <div class="progress-bar" style="width: {{ budget_percentage|default:0|floatformat:0 }}%;" aria-valuenow="{{ budget_percentage|default:0|floatformat:0 }}" aria-valuemin="0" aria-valuemax="100"></div>
     </div>
-    <small>{{ budget_percentage|default:0|floatformat:0 }}% used</small>
+    <small id="percentage-display">{{ budget_percentage|default:0|floatformat:0 }}% used</small>
 
 
-    <form method="post" class="mb-4 mt-3">
+    <form method="post" class="mb-4 mt-3" id="budget-form">
         {% csrf_token %}
         <label>Update Budget (BHD)</label>
-<input type="number" name="budget" value="{{ budget.total }}" min="0" step="0.01" class="form-control mb-2">
-        <button type="submit" class="btn btn-primary">Update</button>
+        <input type="number" name="budget" value="{{ budget.total|floatformat:2 }}" min="0" step="0.01" class="form-control mb-2" id="budget-input">
+        <button type="submit" class="btn btn-primary">Save</button>
     </form>
-
-
+    
     {% if is_over_budget %}
-        <div class="alert alert-danger mb-4">
-            <strong>Warning!</strong> You are over budget! Your total spending (including cart items) exceeds your budget.
-        </div>
+    <div class="alert alert-danger mb-4" id="budget-warning">
+        <strong>Warning!</strong> You are over budget! Your total spending (including cart items) exceeds your budget.
+    </div>
+    {% else %}
+    <div class="alert alert-danger mb-4" id="budget-warning" style="display: none;">
+        <strong>Warning!</strong> You are over budget! Your total spending (including cart items) exceeds your budget.
+    </div>
     {% endif %}
-
+    
+    <script>
+        // Get the total spent value from the server-side
+        const totalSpent = {{ total_spent|default:0 }};
+        
+        // Function to calculate and update percentage
+        function updatePercentage() {
+            const budgetValue = parseFloat(document.getElementById('budget-input').value) || 0;
+            let percentage = 0;
+            
+            if (budgetValue > 0) {
+                percentage = (totalSpent / budgetValue) * 100;
+                percentage = Math.min(Math.max(percentage, 0), 999); // Limit to reasonable range
+            }
+            
+            // Update the percentage display
+            document.getElementById('percentage-display').innerText = Math.round(percentage) + '% used';
+            
+            // Update the progress bar width
+            const progressBar = document.querySelector('.progress-bar');
+            if (progressBar) {
+                progressBar.style.width = Math.min(percentage, 100) + '%';
+                progressBar.setAttribute('aria-valuenow', Math.round(percentage));
+            }
+            
+            // Show/hide warning based on budget
+            const warningElement = document.getElementById('budget-warning');
+            if (warningElement) {
+                if (totalSpent > budgetValue && budgetValue > 0) {
+                    warningElement.style.display = 'block';
+                } else {
+                    warningElement.style.display = 'none';
+                }
+            }
+            
+            // Save warning state to localStorage
+            localStorage.setItem('isOverBudget', totalSpent > budgetValue && budgetValue > 0);
+        }
+        
+        // Update percentage when budget input changes
+        document.getElementById('budget-input').addEventListener('input', updatePercentage);
+        
+        // Store budget value and warning state after form submission
+        document.getElementById('budget-form').addEventListener('submit', function(e) {
+            const budgetValue = document.getElementById('budget-input').value;
+            localStorage.setItem('currentBudget', budgetValue);
+            localStorage.setItem('isOverBudget', totalSpent > parseFloat(budgetValue) && parseFloat(budgetValue) > 0);
+            // We'll let the form submit normally to update the server-side values
+        });
+        
+        // On page load
+        window.addEventListener('load', function() {
+            // Restore budget value if available
+            const savedBudget = localStorage.getItem('currentBudget');
+            if (savedBudget) {
+                document.getElementById('budget-input').value = savedBudget;
+                // Update percentage with the restored budget value
+                updatePercentage();
+                
+                // Calculate if over budget based on current values, not stored state
+                const budgetValue = parseFloat(savedBudget) || 0;
+                const isActuallyOverBudget = totalSpent > budgetValue && budgetValue > 0;
+                
+                // Update warning message based on actual calculation
+                const warningElement = document.getElementById('budget-warning');
+                if (warningElement) {
+                    warningElement.style.display = isActuallyOverBudget ? 'block' : 'none';
+                }
+            }
+        });
+    </script>
 
     <h3>Selected Products</h3>
     {% if selected_products %}
